@@ -1,0 +1,43 @@
+{
+  "name": "serhii-samborskyi",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env.local --import tsx scripts/start.ts --dev",
+    "build": "next build",
+    "start": "node --env-file-if-exists=.env.local --import tsx scripts/start.ts",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "setup": "node scripts/setup.mjs",
+    "worker": "node --env-file-if-exists=.env.local --import tsx scripts/worker.ts",
+    "telegram:webhook": "node --env-file-if-exists=.env.local --import tsx scripts/telegram-webhook.mjs",
+    "typecheck": "tsc --noEmit",
+    "start:web": "next start --hostname 0.0.0.0"
+  },
+  "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "lucide-react": "^1.53.0",
+    "next": "^16.4.0",
+    "pg": "^8.23.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "tsx": "^4.23.15",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.19",
+    "@types/pg": "^8.23.1",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@types/web-push": "^3.6.4",
+    "eslint": "9.39.4",
+    "eslint-config-next": "^16.4.0",
+    "prettier": "^3.9.9",
+    "typescript": "5.9.3"
+  },
+  "type": "module"
+}

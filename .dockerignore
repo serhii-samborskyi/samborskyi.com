@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env*
+data
+!data/.gitkeep
+outputs
+coverage
+*.tsbuildinfo
