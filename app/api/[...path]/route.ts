@@ -170,13 +170,17 @@ async function route(req: Request) {
     await db()
       .prepare('INSERT INTO sessions(token_hash,expires_at) VALUES(?,?)')
       .run(hash(value), Date.now() + 86400000);
-    return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie(value) });
+    return json({ ok: true }, 200, {
+      'Set-Cookie': sessionCookie(value, 86400, req.headers.get('origin')!),
+    });
   }
   if (p === 'logout' && method === 'POST') {
     await db()
       .prepare('DELETE FROM sessions WHERE token_hash=?')
       .run(hash(sessionValue(req)));
-    return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
+    return json({ ok: true }, 200, {
+      'Set-Cookie': sessionCookie('', 0, req.headers.get('origin')!),
+    });
   }
   if (p === 'subscribe/email' && method === 'POST') {
     await rateLimit(req, 'email', 10);

@@ -31,6 +31,50 @@ test('Coolify runtime configuration and database persistence', async (t) => {
       assert.equal(process.env.VAPID_SUBJECT, 'https://music.example.com');
     },
   );
+  await t.test(
+    'login, authenticated access, and logout work through a secondary Coolify domain',
+    async () => {
+      const { POST, GET } = await import('../app/api/[...path]/route');
+      const login = await POST(
+        new Request('http://container:3000/api/login', {
+          method: 'POST',
+          headers: { origin: 'https://www.music.example.com', 'content-type': 'application/json' },
+          body: JSON.stringify({ password: process.env.ADMIN_PASSWORD }),
+        }),
+      );
+      assert.equal(login.status, 200);
+      assert.match(login.headers.get('set-cookie')!, /; Secure/);
+      const cookie = login.headers.get('set-cookie')!.split(';')[0];
+      assert.equal(
+        (
+          await GET(
+            new Request('http://container:3000/api/admin/overview', {
+              headers: { cookie },
+            }),
+          )
+        ).status,
+        200,
+      );
+      const logout = await POST(
+        new Request('http://container:3000/api/logout', {
+          method: 'POST',
+          headers: { origin: 'https://www.music.example.com', cookie },
+        }),
+      );
+      assert.equal(logout.status, 200);
+      assert.match(logout.headers.get('set-cookie')!, /Max-Age=0; Secure/);
+      assert.equal(
+        (
+          await GET(
+            new Request('http://container:3000/api/admin/overview', {
+              headers: { cookie },
+            }),
+          )
+        ).status,
+        401,
+      );
+    },
+  );
   await t.test('keys survive a fresh process configuration and reopened database', async () => {
     const original = {
       secret: process.env.SESSION_SECRET,

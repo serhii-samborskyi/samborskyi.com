@@ -1,6 +1,6 @@
 import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { db } from './db';
-import { siteOrigin } from './site-origin';
+import { siteOrigin, siteOrigins } from './site-origin';
 export class HttpError extends Error {
   constructor(
     public status: number,
@@ -18,7 +18,7 @@ export function constantEqual(a: string, b: string) {
 }
 export const origin = siteOrigin;
 export function sameOrigin(req: Request) {
-  if (req.headers.get('origin') !== origin())
+  if (!siteOrigins().includes(req.headers.get('origin') || ''))
     throw new HttpError(403, 'This request must come from the listening room.');
 }
 export function secret() {
@@ -55,8 +55,8 @@ export function verifyPassword(password: string) {
   if (!salt || !expected) throw new HttpError(503, 'Studio password configuration is invalid.');
   return constantEqual(scryptSync(password, salt, 64).toString('hex'), expected);
 }
-export function sessionCookie(value: string, expires = 86400) {
-  return `ss_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${expires}${origin().startsWith('https:') ? '; Secure' : ''}`;
+export function sessionCookie(value: string, expires = 86400, requestOrigin = origin()) {
+  return `ss_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${expires}${requestOrigin.startsWith('https:') ? '; Secure' : ''}`;
 }
 export function sessionValue(req: Request) {
   return (

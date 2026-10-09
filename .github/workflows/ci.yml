@@ -41,7 +41,7 @@ jobs:
           docker run -d --name studio-ci --network host \
             -e DATABASE_URL=postgresql://studio_test:ci-disposable-database@127.0.0.1:5432/studio_test \
             -e ADMIN_PASSWORD=ci-disposable-admin-password \
-            -e COOLIFY_URL=http://127.0.0.1:3000 samborskyi-ci
+            -e COOLIFY_URL=http://preview.example.test:3000,https://music.example.test:3000 samborskyi-ci
           for i in $(seq 1 40); do
             if curl --fail --silent http://127.0.0.1:3000/api/health; then exit 0; fi
             sleep 2
@@ -52,6 +52,7 @@ jobs:
         run: node scripts/smoke.mjs
         env:
           SMOKE_BASE_URL: http://127.0.0.1:3000
+          SMOKE_ORIGIN: https://music.example.test
           SMOKE_ADMIN_PASSWORD: ci-disposable-admin-password
       - name: Replace the entire container
         run: |
@@ -60,7 +61,7 @@ jobs:
           docker run -d --name studio-ci --network host \
             -e DATABASE_URL=postgresql://studio_test:ci-disposable-database@127.0.0.1:5432/studio_test \
             -e ADMIN_PASSWORD=ci-disposable-admin-password \
-            -e COOLIFY_URL=http://127.0.0.1:3000 samborskyi-ci
+            -e COOLIFY_URL=http://preview.example.test:3000,https://music.example.test:3000 samborskyi-ci
           for i in $(seq 1 40); do
             if curl --fail --silent http://127.0.0.1:3000/api/health; then exit 0; fi
             sleep 2
@@ -71,6 +72,7 @@ jobs:
         run: node scripts/smoke.mjs --verify
         env:
           SMOKE_BASE_URL: http://127.0.0.1:3000
+          SMOKE_ORIGIN: https://music.example.test
           SMOKE_ADMIN_PASSWORD: ci-disposable-admin-password
       - name: Container logs
         if: failure()

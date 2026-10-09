@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 const base = process.env.SMOKE_BASE_URL;
 const password = process.env.SMOKE_ADMIN_PASSWORD;
+const browserOrigin = process.env.SMOKE_ORIGIN || base;
 if (!base || !['127.0.0.1', 'localhost'].includes(new URL(base).hostname) || !password)
   throw new Error(
     'Use SMOKE_BASE_URL pointing to a disposable localhost app and SMOKE_ADMIN_PASSWORD.',
@@ -16,7 +17,7 @@ async function request(endpoint, body) {
   const response = await fetch(base + endpoint, {
     method: body === undefined ? 'GET' : 'POST',
     headers: {
-      Origin: base,
+      Origin: browserOrigin,
       Cookie: cookie,
       ...(body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
     },
@@ -54,6 +55,7 @@ if (process.argv.includes('--verify')) {
   );
 } else {
   const login = await request('/api/login', { password });
+  if (browserOrigin.startsWith('https:')) assert.match(login.headers.get('set-cookie'), /; Secure/);
   cookie = login.headers.get('set-cookie').split(';')[0];
   await request('/api/admin/overview');
   const wav = Buffer.alloc(32044);
