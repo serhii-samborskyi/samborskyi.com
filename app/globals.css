@@ -6,6 +6,8 @@
   --text: #f0eee8;
   --muted: #92918a;
   --accent: #d9e996;
+  --accent-soft: rgb(217 233 150 / 6%);
+  --accent-line: rgb(217 233 150 / 28%);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 * {
@@ -1108,7 +1110,7 @@ html[data-keyboard='true'] *::after {
   border-bottom: 1px solid var(--line);
 }
 .track-row.selected {
-  background: #d9e908;
+  background: var(--accent-soft);
 }
 .track-number {
   font-size: 10px;
@@ -1250,7 +1252,7 @@ html[data-keyboard='true'] *::after {
   font-family: 'DM Sans Variable', Arial;
   font-size: 8px;
   letter-spacing: 1.3px;
-  border: 1px solid #d9e936;
+  border: 1px solid var(--accent-line);
   color: var(--accent);
   border-radius: 3px;
   padding: 5px 8px;
@@ -1377,9 +1379,10 @@ html[data-keyboard='true'] *::after {
   align-items: center;
   justify-content: center;
   position: relative;
-  border: 1px dashed #d9e94d;
+  border: 1px dashed var(--accent-line);
   border-radius: 6px;
-  background: #d9e905;
+  background: var(--accent-soft);
+  color: var(--text);
   min-height: 180px;
   margin-top: 0;
   cursor: pointer;
@@ -1485,7 +1488,7 @@ html[data-keyboard='true'] *::after {
   padding: 5px 7px;
   border-radius: 3px;
   white-space: nowrap;
-  background: #d9e90a;
+  background: var(--accent-soft);
 }
 .unconnected {
   background: #ffffff07;
@@ -1547,9 +1550,9 @@ html[data-keyboard='true'] *::after {
   gap: 10px;
   align-items: center;
   padding: 15px 20px;
-  background: #d9e90b;
+  background: var(--accent-soft);
   color: var(--accent);
-  border: 1px solid #d9e922;
+  border: 1px solid var(--accent-line);
   font-size: 12px;
   border-radius: 5px;
   margin-bottom: 24px;
